@@ -1,6 +1,29 @@
 import { Menu, Search, Plus, Bell } from 'lucide-react'
+import { useLocation } from 'react-router-dom'
+
+const TITLES: Record<string, { title: string; subtitle: string }> = {
+  '/': {
+    title: 'Panel principal',
+    subtitle: 'Resumen general de tu actividad en redes',
+  },
+  '/calendario': {
+    title: 'Calendario',
+    subtitle: 'Todas tus publicaciones programadas del mes',
+  },
+  '/ideas': {
+    title: 'Ideas',
+    subtitle: 'Guardá ideas rápidas para futuros contenidos',
+  },
+  '/metricas': {
+    title: 'Métricas',
+    subtitle: 'El rendimiento de cada red social, de un vistazo',
+  },
+}
 
 export default function Topbar({ onMenuClick }: { onMenuClick: () => void }) {
+  const { pathname } = useLocation()
+  const { title, subtitle } = TITLES[pathname] ?? TITLES['/']
+
   return (
     <header className="sticky top-0 z-30 flex items-center gap-3 border-b border-border bg-bg/85 px-4 py-4 backdrop-blur-md sm:px-6">
       <button
@@ -13,12 +36,8 @@ export default function Topbar({ onMenuClick }: { onMenuClick: () => void }) {
       </button>
 
       <div>
-        <h1 className="text-lg font-semibold text-text sm:text-xl">
-          Panel de contenido
-        </h1>
-        <p className="hidden text-xs text-text-muted sm:block">
-          Gestioná todas tus publicaciones en un solo lugar
-        </p>
+        <h1 className="text-lg font-semibold text-text sm:text-xl">{title}</h1>
+        <p className="hidden text-xs text-text-muted sm:block">{subtitle}</p>
       </div>
 
       <div className="ml-auto flex items-center gap-2 sm:gap-3">

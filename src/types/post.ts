@@ -9,4 +9,29 @@ export interface Post {
   status: PostStatus
   scheduledAt: string
   caption?: string
+  likes?: number
+  comments?: number
+  reach?: number
+}
+
+export interface FollowerPoint {
+  date: string
+  instagram: number
+  linkedin: number
+}
+
+export interface PlatformMetrics {
+  platform: Platform
+  followers: number
+  followersDelta: number
+  engagementRate: number
+  postsThisMonth: number
+  avgReach: number
+}
+
+export interface Idea {
+  id: string
+  text: string
+  platform: Platform | 'general'
+  createdAt: string
 }

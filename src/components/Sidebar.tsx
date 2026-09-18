@@ -1,19 +1,18 @@
+import { NavLink } from 'react-router-dom'
 import {
   LayoutGrid,
   CalendarDays,
-  Image as ImageIcon,
+  Lightbulb,
   BarChart3,
-  Settings,
   Sparkles,
   X,
 } from 'lucide-react'
 
 const NAV = [
-  { label: 'Panel', icon: LayoutGrid, active: true },
-  { label: 'Calendario', icon: CalendarDays, active: false },
-  { label: 'Biblioteca', icon: ImageIcon, active: false },
-  { label: 'Estadísticas', icon: BarChart3, active: false },
-  { label: 'Configuración', icon: Settings, active: false },
+  { label: 'Panel', to: '/', icon: LayoutGrid, end: true },
+  { label: 'Calendario', to: '/calendario', icon: CalendarDays, end: false },
+  { label: 'Ideas', to: '/ideas', icon: Lightbulb, end: false },
+  { label: 'Métricas', to: '/metricas', icon: BarChart3, end: false },
 ]
 
 export default function Sidebar({
@@ -56,19 +55,23 @@ export default function Sidebar({
         </div>
 
         <nav className="flex flex-1 flex-col gap-1">
-          {NAV.map(({ label, icon: Icon, active }) => (
-            <a
+          {NAV.map(({ label, to, icon: Icon, end }) => (
+            <NavLink
               key={label}
-              href="#"
-              className={`flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-colors ${
-                active
-                  ? 'bg-brand/15 text-brand-light shadow-[inset_0_0_0_1px_rgba(204,0,126,0.35)]'
-                  : 'text-text-muted hover:bg-white/5 hover:text-text'
-              }`}
+              to={to}
+              end={end}
+              onClick={onClose}
+              className={({ isActive }) =>
+                `flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-colors ${
+                  isActive
+                    ? 'bg-brand/15 text-brand-light shadow-[inset_0_0_0_1px_rgba(204,0,126,0.35)]'
+                    : 'text-text-muted hover:bg-white/5 hover:text-text'
+                }`
+              }
             >
               <Icon size={18} strokeWidth={2} />
               {label}
-            </a>
+            </NavLink>
           ))}
         </nav>
 
