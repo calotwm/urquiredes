@@ -1,7 +1,15 @@
-import { Users, Heart, FileText, Eye, ArrowUpRight } from 'lucide-react'
-import { platformMetrics, followerHistory } from '../data/metrics'
+import { motion } from 'framer-motion'
+import { Heart, FileText, Eye, ArrowUpRight, TrendingUp, BarChart3 } from 'lucide-react'
+import {
+  platformMetrics,
+  dailyFollowerHistory,
+  platformComparison,
+  headlineMetrics,
+} from '../data/metrics'
 import PlatformIcon from '../components/PlatformIcon'
-import GrowthChart from '../components/GrowthChart'
+import HeroStatCard from '../components/HeroStatCard'
+import GrowthLineChart from '../components/GrowthLineChart'
+import PlatformBarChart from '../components/PlatformBarChart'
 
 function formatCompact(n: number) {
   return new Intl.NumberFormat('es-AR', { notation: 'compact' }).format(n)
@@ -15,10 +23,19 @@ const LABELS: Record<string, string> = {
 export default function MetricsPage() {
   return (
     <div className="flex flex-col gap-6">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        {headlineMetrics.map((metric, i) => (
+          <HeroStatCard key={metric.label} metric={metric} index={i} />
+        ))}
+      </div>
+
       <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
-        {platformMetrics.map((m) => (
-          <div
+        {platformMetrics.map((m, i) => (
+          <motion.div
             key={m.platform}
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.3 + i * 0.08, ease: [0.16, 1, 0.3, 1] }}
             className="flex flex-col gap-5 rounded-2xl border border-border bg-surface p-5 sm:p-6"
           >
             <div className="flex items-center justify-between">
@@ -76,19 +93,45 @@ export default function MetricsPage() {
                 </p>
               </div>
             </div>
-          </div>
+          </motion.div>
         ))}
       </div>
 
-      <div className="rounded-2xl border border-border bg-surface p-4 sm:p-5">
+      <motion.div
+        initial={{ opacity: 0, y: 16 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.45, ease: [0.16, 1, 0.3, 1] }}
+        className="rounded-2xl border border-border bg-surface p-4 sm:p-5"
+      >
         <div className="mb-3 flex items-center gap-2">
-          <Users size={15} className="text-brand-light" />
-          <h2 className="text-sm font-semibold text-text">
-            Crecimiento comparado
-          </h2>
+          <TrendingUp size={15} className="text-brand-light" />
+          <div>
+            <h2 className="text-sm font-semibold text-text">
+              Crecimiento de seguidores
+            </h2>
+            <p className="text-xs text-text-muted">Últimos 30 días</p>
+          </div>
         </div>
-        <GrowthChart data={followerHistory} />
-      </div>
+        <GrowthLineChart data={dailyFollowerHistory} />
+      </motion.div>
+
+      <motion.div
+        initial={{ opacity: 0, y: 16 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.55, ease: [0.16, 1, 0.3, 1] }}
+        className="rounded-2xl border border-border bg-surface p-4 sm:p-5"
+      >
+        <div className="mb-3 flex items-center gap-2">
+          <BarChart3 size={15} className="text-brand-light" />
+          <div>
+            <h2 className="text-sm font-semibold text-text">
+              Instagram vs. LinkedIn
+            </h2>
+            <p className="text-xs text-text-muted">Comparación de rendimiento</p>
+          </div>
+        </div>
+        <PlatformBarChart data={platformComparison} />
+      </motion.div>
     </div>
   )
 }
