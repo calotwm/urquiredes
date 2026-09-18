@@ -7,6 +7,7 @@ import DashboardPage from './pages/DashboardPage.tsx'
 import CalendarPage from './pages/CalendarPage.tsx'
 import IdeasPage from './pages/IdeasPage.tsx'
 import MetricsPage from './pages/MetricsPage.tsx'
+import ScriptsPage from './pages/ScriptsPage.tsx'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
@@ -17,6 +18,7 @@ createRoot(document.getElementById('root')!).render(
           <Route path="calendario" element={<CalendarPage />} />
           <Route path="ideas" element={<IdeasPage />} />
           <Route path="metricas" element={<MetricsPage />} />
+          <Route path="guiones" element={<ScriptsPage />} />
         </Route>
       </Routes>
     </BrowserRouter>

@@ -4,6 +4,7 @@ import {
   CalendarDays,
   Lightbulb,
   BarChart3,
+  Wand2,
   Sparkles,
   X,
 } from 'lucide-react'
@@ -11,6 +12,7 @@ import {
 const NAV = [
   { label: 'Panel', to: '/', icon: LayoutGrid, end: true },
   { label: 'Calendario', to: '/calendario', icon: CalendarDays, end: false },
+  { label: 'Guiones IA', to: '/guiones', icon: Wand2, end: false },
   { label: 'Ideas', to: '/ideas', icon: Lightbulb, end: false },
   { label: 'Métricas', to: '/metricas', icon: BarChart3, end: false },
 ]

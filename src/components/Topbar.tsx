@@ -18,6 +18,10 @@ const TITLES: Record<string, { title: string; subtitle: string }> = {
     title: 'Métricas',
     subtitle: 'El rendimiento de cada red social, de un vistazo',
   },
+  '/guiones': {
+    title: 'Guiones IA',
+    subtitle: 'Generá guiones completos con inteligencia artificial',
+  },
 }
 
 export default function Topbar({ onMenuClick }: { onMenuClick: () => void }) {
