@@ -90,6 +90,70 @@ app.post('/api/generate-script', async (req, res) => {
   }
 })
 
+const CAROUSEL_SYSTEM_PROMPT = `Sos un experto en contenido para carruseles de Instagram y LinkedIn. Escribís en español rioplatense, tono profesional pero cercano, directo, sin tecnicismos innecesarios.
+
+Dado un tema, generás el contenido completo de un carrusel de entre 6 y 9 filminas, con esta estructura:
+1. La primera filmina es el "hook": una frase de apertura fuerte que capture la atención y dé ganas de deslizar.
+2. Las filminas del medio son "content": desarrollan el tema, una idea clara por filmina, con un título corto y un texto breve de apoyo (2-3 oraciones como máximo, porque tiene que entrar en una imagen).
+3. La última filmina es el "cta": cierre con llamada a la acción (invitar a comentar, guardar, seguir o compartir).
+
+Cada filmina tiene:
+- "type": exactamente uno de "hook", "content" o "cta".
+- "title": título corto de la filmina (máximo 8 palabras). En "hook" y "cta" puede repetir o resumir el texto principal.
+- "text": el texto de apoyo de la filmina (máximo 240 caracteres), listo para mostrar en la imagen.
+
+Respondé ÚNICAMENTE con un objeto JSON válido (sin markdown, sin backticks, sin texto antes o después) con exactamente la clave "slides", un array de 6 a 9 objetos con las claves type, title, text.`
+
+app.post('/api/generate-carousel', async (req, res) => {
+  const topic = typeof req.body?.topic === 'string' ? req.body.topic.trim() : ''
+
+  if (!topic) {
+    return res.status(400).json({ error: 'Falta el tema del carrusel.' })
+  }
+  if (!OPENCODE_API_KEY) {
+    return res.status(500).json({
+      error: 'El servidor no tiene configurada OPENCODE_API_KEY.',
+    })
+  }
+
+  try {
+    const response = await fetch(`${OPENCODE_BASE_URL}/chat/completions`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${OPENCODE_API_KEY}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        model: OPENCODE_MODEL,
+        temperature: 0.85,
+        messages: [
+          { role: 'system', content: CAROUSEL_SYSTEM_PROMPT },
+          { role: 'user', content: `Tema del carrusel: ${topic}` },
+        ],
+      }),
+    })
+
+    if (!response.ok) {
+      const errText = await response.text()
+      console.error('OpenCode API error:', response.status, errText)
+      return res.status(502).json({ error: 'Error al generar el carrusel con la IA.' })
+    }
+
+    const data = await response.json()
+    const content = data.choices?.[0]?.message?.content ?? ''
+    const carousel = extractJson(content)
+
+    if (!Array.isArray(carousel.slides) || carousel.slides.length === 0) {
+      throw new Error('Respuesta de IA sin filminas')
+    }
+
+    return res.json(carousel)
+  } catch (err) {
+    console.error('generate-carousel failed:', err)
+    return res.status(500).json({ error: 'No se pudo generar el carrusel. Intentá de nuevo.' })
+  }
+})
+
 app.use(express.static(distDir))
 
 app.use((req, res, next) => {
