@@ -5,11 +5,13 @@ import StatCard from '../components/StatCard'
 import GrowthChart from '../components/GrowthChart'
 import TopPostRow from '../components/TopPostRow'
 import PostCard from '../components/PostCard'
-import { posts } from '../data/posts'
+import { usePosts } from '../hooks/usePosts'
 import { followerHistory, platformMetrics } from '../data/metrics'
 import { TODAY, startOfWeek, endOfWeek } from '../lib/date'
 
 export default function DashboardPage() {
+  const { posts } = usePosts()
+
   const weekPosts = useMemo(() => {
     const start = startOfWeek(TODAY)
     const end = endOfWeek(TODAY)
@@ -17,7 +19,7 @@ export default function DashboardPage() {
       const d = new Date(p.scheduledAt)
       return d >= start && d <= end
     })
-  }, [])
+  }, [posts])
 
   const topPosts = useMemo(
     () =>
@@ -28,7 +30,7 @@ export default function DashboardPage() {
             (b.likes ?? 0) + (b.comments ?? 0) - ((a.likes ?? 0) + (a.comments ?? 0)),
         )
         .slice(0, 3),
-    [],
+    [posts],
   )
 
   const upcoming = useMemo(
@@ -40,7 +42,7 @@ export default function DashboardPage() {
             new Date(a.scheduledAt).getTime() - new Date(b.scheduledAt).getTime(),
         )
         .slice(0, 4),
-    [],
+    [posts],
   )
 
   const totalFollowers = platformMetrics.reduce((sum, m) => sum + m.followers, 0)
